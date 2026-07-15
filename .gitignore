@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Output
+stego/output/
+
+# Logs
+*.log
+
+# Windows
+Thumbs.db
+Desktop.ini
