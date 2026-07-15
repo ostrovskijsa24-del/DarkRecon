@@ -1,60 +1,80 @@
 """
+bitplanes.py
+
 Извлечение битовых плоскостей изображения.
 """
-
 from pathlib import Path
+import os
 
 import numpy as np
 
-from modules.stego.utils import ImageUtils
+from .utils import ImageUtils
 
 
 class BitPlaneAnalyzer:
+    """
+    Анализатор битовых плоскостей изображения.
+    """
 
-    CHANNELS = ("B", "G", "R", "A")
+    CHANNEL_NAMES = ["B", "G", "R", "A"]
 
-    def __init__(self, file_path):
+    def __init__(self, image_path: str):
 
-        self.file_path = file_path
+        self.image_path = image_path
 
-        self.image = ImageUtils.load_image(file_path)
+        self.image = ImageUtils.load_image(image_path)
 
         self.channels = ImageUtils.get_channels(self.image)
 
-    def extract_channel(self, channel: np.ndarray):
+    def extract_planes(self, channel: np.ndarray):
+        """
+        Извлекает 8 битовых плоскостей одного канала.
+        """
 
         planes = []
 
         for bit in range(8):
-
             plane = (channel >> bit) & 1
-
             planes.append(plane)
 
         return planes
 
-    def save_planes(self,
-                    channel_name,
-                    planes,
-                    output_dir="output/bitplanes"):
+    def save_planes(self, channel_name: str, planes):
+        """
+        Сохраняет битовые плоскости в папку output.
+        """
 
-        output = Path(output_dir) / channel_name
+        # Папка, где находится bitplanes.py
+        base_dir = Path(__file__).parent
 
-        output.mkdir(parents=True, exist_ok=True)
+        output_folder = (
+                base_dir /
+                "output" /
+                "bitplanes" /
+                channel_name
+        )
+
+        output_folder.mkdir(parents=True, exist_ok=True)
 
         for bit, plane in enumerate(planes):
+            filename = output_folder / f"bit{bit}.png"
 
             ImageUtils.save_image(
-                output / f"bit{bit}.png",
+                filename,
                 ImageUtils.normalize_binary(plane)
             )
 
+            print(f"Сохранено: {filename}")
+
     def extract_all(self):
+        """
+        Извлекает все битовые плоскости всех каналов.
+        """
 
-        for name, channel in zip(self.CHANNELS, self.channels):
+        for channel_name, channel in zip(self.CHANNEL_NAMES, self.channels):
 
-            planes = self.extract_channel(channel)
+            planes = self.extract_planes(channel)
 
-            self.save_planes(name, planes)
+            self.save_planes(channel_name, planes)
 
-        print("Анализ завершён.")
+        print("Битовые плоскости успешно сохранены.")
