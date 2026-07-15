@@ -1,4 +1,4 @@
-from stego.utils import ImageUtils
+from modules.stego import ImageUtils
 
 
 def main():
