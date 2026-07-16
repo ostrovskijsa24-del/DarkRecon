@@ -1,25 +1,32 @@
 """
 Запуск модуля Crypto.
-
-Обёртка над бизнес-логикой modules.crypto.analyzer.analyze_crypto.
-Автоматически перебирает Base64/Hex/Цезарь/ROT/Affine/XOR и рекурсивно
-раскручивает цепочки декодирования. Вывод — в tui/reports_crypto.py.
 """
 from __future__ import annotations
 
-from rich.prompt import Prompt, IntPrompt, Confirm
+from pathlib import Path
+from rich.prompt import Prompt
 
 from . import console
-from .reports_crypto import print_probable_flags
+from .reports_crypto import print_and_save_report
 
 from modules.crypto.analyzer import analyze_crypto
 
 
+def _ask_output_dir() -> Path:
+    """
+    Строго запрашивает папку для сохранения отчета (как в Stego).
+    Пустой ввод не принимается.
+    """
+    while True:
+        user_input = Prompt.ask("[cyan]Укажите папку для сохранения отчета (например, . или /tmp)[/]").strip()
+        if user_input:
+            return Path(user_input)
+        console.print("[yellow]Путь не может быть пустым.[/]")
+
+
 def run_crypto():
     console.print("\n[bold cyan]═══ АНАЛИЗ СТРОКИ (CRYPTO) ═══[/]")
-    console.print("[dim]Авто-декодер: Base64/Base32/Hex/URL, Цезарь, ROT13/47, Atbash,[/]")
-    console.print("[dim]Affine, single-byte XOR, repeating-key XOR.[/]")
-    console.print("[dim]Рекурсивно раскручивает цепочки и ранжирует результаты по «читаемости».[/]")
+    console.print("[dim]Авто-декодер: Base64/Hex/Цезарь/ROT/Affine/XOR.[/]")
 
     data = Prompt.ask("\n[cyan]Введите строку или данные для анализа[/]")
     if not data.strip():
@@ -27,17 +34,22 @@ def run_crypto():
         Prompt.ask("\n[dim]Enter, чтобы продолжить[/]")
         return
 
-    recursive = Confirm.ask("[cyan]Рекурсивный декод?[/]", default=True)
-    max_depth = IntPrompt.ask("[cyan]Максимальная глубина[/]", default=2)
-    limit = IntPrompt.ask("[cyan]Сколько лучших кандидатов показать[/]", default=7)
+    # Запрашиваем префикс флага (как в Web)
+    flag_prefix = Prompt.ask("[cyan]Префикс флага[/] [dim](например, grodno, ctf; Enter — стандартные)[/]", default="")
+    
+    # Запрашиваем путь сохранения (как в Stego)
+    output_dir = _ask_output_dir()
+    output_file = output_dir / "crypto_report.txt"
 
-    console.print("\n[dim]Анализирую...[/]")
+    console.print("\n[dim]Анализирую (рекурсивно, глубина = 2)...[/]")
     try:
-        results = analyze_crypto(data, recursive=recursive, max_depth=max_depth)
-        print_probable_flags(results, limit=limit)
+        # Бизнес-логика анализа
+        results = analyze_crypto(data, recursive=True, max_depth=2)
+        
+        # Передаем всё в модуль отрисовки и сохранения
+        print_and_save_report(results, output_file, flag_prefix=flag_prefix, limit=7)
     except Exception as error:
         from rich.markup import escape
-        safe_error = escape(str(error))
-        console.print(f"[red]Ошибка анализа:[/] {safe_error}")
+        console.print(f"[red]Ошибка анализа:[/] {escape(str(error))}")
 
     Prompt.ask("\n[dim]Enter, чтобы продолжить[/]")
