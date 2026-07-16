@@ -41,7 +41,7 @@ class CookieAnalyzer:
     ]
 
     def __init__(self, flag_prefix: str = ""):
-        """
+        r"""
         flag_prefix — строка-префикс флага (например "grodno", "HTB", "picoCTF").
         Автоматически формирует regex вида: <prefix>\{[^}]+\}
         Если передана строка с "{" или "\{" — используется как raw regex.

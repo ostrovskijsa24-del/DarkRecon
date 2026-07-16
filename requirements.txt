@@ -1,0 +1,15 @@
+# ════════════ DarkRecon — общие зависимости ════════════
+# Web-безопасность / OSINT
+aiohttp>=3.9.0
+aiofiles>=23.2.0
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+rich>=13.7.0
+PyJWT>=2.8.0
+python-whois>=0.9.0
+dnspython>=2.6.0
+
+# Stego
+numpy>=1.26.0
+Pillow>=10.0.0
+opencv-python>=4.8.0
