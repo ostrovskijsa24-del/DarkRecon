@@ -1,17 +1,19 @@
+from pathlib import Path
+import sys
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.append(str(PROJECT_ROOT))
+
 from modules.stego.combine_planes import PlaneCombiner
 
 
 def main():
 
-    path = input("Введите путь: ").strip()
+    image = input("Введите путь к изображению: ").strip()
 
-    combiner = PlaneCombiner(path)
+    combiner = PlaneCombiner(image)
 
-    red = combiner.channels[2]
-
-    image = combiner.combine(red, [0, 1])
-
-    combiner.save(image, "R", [0, 1])
+    combiner.run()
 
 
 if __name__ == "__main__":
