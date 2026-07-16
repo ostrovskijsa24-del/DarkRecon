@@ -1,9 +1,8 @@
 """
 Запуск модуля Forensics.
 
-Обёртка над modules.forensics.analyzer.analyze_forensics и
-modules.forensics.output.print_feed. Логика разрешения пути
-перенесена из modules/forensics/run_forensics_temp.py (уже протестирована).
+Обёртка над бизнес-логикой modules.forensics.analyzer.analyze_forensics.
+Вывод — в tui/reports_forensics.py.
 """
 from __future__ import annotations
 
@@ -13,12 +12,12 @@ from pathlib import Path
 from rich.prompt import Prompt, IntPrompt
 
 from . import console
+from .reports_forensics import print_feed
 
 # Точка входа в проект нужна для resolve_input_path (поиск по PROJECT_ROOT).
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 from modules.forensics.analyzer import analyze_forensics
-from modules.forensics.output import print_feed
 
 
 def _unique_paths(paths: list[Path]) -> list[Path]:
@@ -84,7 +83,6 @@ def run_forensics():
     console.print(f"\n[dim]Анализирую {resolved_path}...[/]")
     try:
         result = analyze_forensics(resolved_path, chunk_size=chunk_size)
-        # Модуль forensics выводит через plain print — оставляем как есть.
         print_feed(result, limit=limit)
     except Exception as error:
         console.print(f"[red]Ошибка анализа:[/] {error}")

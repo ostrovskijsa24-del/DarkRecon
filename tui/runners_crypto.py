@@ -1,19 +1,18 @@
 """
 Запуск модуля Crypto.
 
-Обёртка над modules.crypto.analyzer.analyze_crypto и
-modules.crypto.output.print_probable_flags. Автоматически
-перебирает Base64/Hex/Цезарь/ROT/Affine/XOR и рекурсивно
-раскручивает цепочки декодирования.
+Обёртка над бизнес-логикой modules.crypto.analyzer.analyze_crypto.
+Автоматически перебирает Base64/Hex/Цезарь/ROT/Affine/XOR и рекурсивно
+раскручивает цепочки декодирования. Вывод — в tui/reports_crypto.py.
 """
 from __future__ import annotations
 
 from rich.prompt import Prompt, IntPrompt, Confirm
 
 from . import console
+from .reports_crypto import print_probable_flags
 
 from modules.crypto.analyzer import analyze_crypto
-from modules.crypto.output import print_probable_flags
 
 
 def run_crypto():
@@ -35,9 +34,10 @@ def run_crypto():
     console.print("\n[dim]Анализирую...[/]")
     try:
         results = analyze_crypto(data, recursive=recursive, max_depth=max_depth)
-        # Модуль crypto выводит через plain print — оставляем как есть.
         print_probable_flags(results, limit=limit)
     except Exception as error:
-        console.print(f"[red]Ошибка анализа:[/] {error}")
+        from rich.markup import escape
+        safe_error = escape(str(error))
+        console.print(f"[red]Ошибка анализа:[/] {safe_error}")
 
     Prompt.ask("\n[dim]Enter, чтобы продолжить[/]")

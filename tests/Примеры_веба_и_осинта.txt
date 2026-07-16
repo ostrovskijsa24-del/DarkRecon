@@ -1,0 +1,30 @@
+WEB
+
+1️⃣ Structure Scanner
+https://google.com
+
+2️⃣ Response Analyzer
+https://httpbin.org/headers
+https://example.com
+
+3️⃣ Cookie Analyzer
+flag=Y3Rme2I0czM2NF9jMDBraWV9
+
+4️⃣ JWT Tool
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30
+
+5️⃣ CORS Scanner
+https://api.github.com 
+
+6. google.com
+
+7. edu.grsu.by
+
+8. edu.grsu.by
+
+
+OSINT
+
+1.Sevty_7
+2.ostrovskijsa24-del
+3.edu.grsu.by

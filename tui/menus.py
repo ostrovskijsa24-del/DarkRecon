@@ -49,7 +49,7 @@ def stego_menu():
     console.print("\n[bold cyan]═══ STEGO ═══[/]")
     console.print("[green]1[/] Битовые плоскости      [dim](визуализация LSB-скрытия в каналах)[/]")
     console.print("[green]2[/] Объединение плоскостей  [dim](сборка изображения из битовых плоскостей)[/]")
-    console.print("[green]3[/] XOR плоскостей          [dim](выявление скрытых данных через XOR)[/]")
+    console.print("[green]3[/] XOR плоскости          [dim](выявление скрытых данных через XOR)[/]")
     console.print("[green]4[/] Статистика изображения  [dim](гистограммы, аномалии распределения)[/]")
     console.print("[green]5[/] Анализ палитры          [dim](скрытые цвета/аномалии в палитре PNG)[/]")
     console.print("[green]6[/] Структура PNG           [dim](чанки, скрытые данные после IEND)[/]")

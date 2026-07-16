@@ -2,9 +2,15 @@
 bitplanes.py
 
 Извлечение битовых плоскостей изображения.
+
+Чистая бизнес-логика:
+- analyze() возвращает битовые плоскости как данные;
+- save(output_dir) сохраняет их на диск и возвращает список путей.
+Вывод в консоль — задача слоя tui.
 """
+from __future__ import annotations
+
 from pathlib import Path
-import os
 
 import numpy as np
 
@@ -19,62 +25,43 @@ class BitPlaneAnalyzer:
     CHANNEL_NAMES = ["B", "G", "R", "A"]
 
     def __init__(self, image_path: str):
-
-        self.image_path = image_path
-
+        self.image_path = Path(image_path)
         self.image = ImageUtils.load_image(image_path)
-
         self.channels = ImageUtils.get_channels(self.image)
+        self.image_name = self.image_path.stem
 
-    def extract_planes(self, channel: np.ndarray):
+    def extract_planes(self, channel: np.ndarray) -> list[np.ndarray]:
+        """Извлекает 8 битовых плоскостей одного канала."""
+        return [(channel >> bit) & 1 for bit in range(8)]
+
+    def analyze(self) -> dict:
         """
-        Извлекает 8 битовых плоскостей одного канала.
+        Извлекает битовые плоскости всех каналов.
+
+        Возвращает dict с плоскостями (без сохранения на диск и без вывода):
+            {image, channels: [{name, planes: [plane, ...]}, ...]}
         """
-
-        planes = []
-
-        for bit in range(8):
-            plane = (channel >> bit) & 1
-            planes.append(plane)
-
-        return planes
-
-    def save_planes(self, channel_name: str, planes):
-        """
-        Сохраняет битовые плоскости в папку output.
-        """
-
-        # Папка, где находится bitplanes.py
-        base_dir = Path(__file__).parent
-
-        output_folder = (
-                base_dir /
-                "output" /
-                "bitplanes" /
-                channel_name
-        )
-
-        output_folder.mkdir(parents=True, exist_ok=True)
-
-        for bit, plane in enumerate(planes):
-            filename = output_folder / f"bit{bit}.png"
-
-            ImageUtils.save_image(
-                filename,
-                ImageUtils.normalize_binary(plane)
-            )
-
-            print(f"Сохранено: {filename}")
-
-    def extract_all(self):
-        """
-        Извлекает все битовые плоскости всех каналов.
-        """
-
+        channels = []
         for channel_name, channel in zip(self.CHANNEL_NAMES, self.channels):
+            channels.append({
+                "name": channel_name,
+                "planes": self.extract_planes(channel),
+            })
+        return {"image": self.image_name, "channels": channels}
 
-            planes = self.extract_planes(channel)
+    def save(self, output_dir: str | Path) -> list[Path]:
+        """
+        Сохраняет битовые плоскости каждого канала в ``output_dir``.
 
-            self.save_planes(channel_name, planes)
-
-        print("Битовые плоскости успешно сохранены.")
+        Структура: ``output_dir/bitplanes/<channel>/bit<N>.png``.
+        Возвращает список сохранённых путей.
+        """
+        results = self.analyze()
+        saved: list[Path] = []
+        for channel in results["channels"]:
+            folder = ImageUtils.ensure_output_dir(output_dir, "bitplanes", channel["name"])
+            for bit, plane in enumerate(channel["planes"]):
+                filename = folder / f"bit{bit}.png"
+                ImageUtils.save_image(filename, ImageUtils.normalize_binary(plane))
+                saved.append(filename)
+        return saved
