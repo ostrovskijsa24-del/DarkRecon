@@ -1,0 +1,12 @@
+MZ
+This file starts with an executable signature but has a .jpg extension.
+It should trigger a type/extension mismatch.
+
+Embedded markers:
+%PDF-1.4
+GIF89a
+SQLite format 3
+
+CTF{mz_inside_jpg}
+API key keyword: key
+Internal IP: 10.10.0.42

@@ -1,0 +1,24 @@
+UNKNOWN_HEADER
+This file is mostly text, but contains several known byte-signature markers
+that the forensics module can find as embedded files.
+
+Before PDF marker.
+%PDF-1.5
+PDF-like payload text.
+
+Before GIF marker.
+GIF89a
+GIF-like payload text.
+
+Before SQLite marker.
+SQLite format 3
+SQLite-like payload text.
+
+Before executable marker.
+MZ
+Executable-like payload text.
+
+flag{embedded_marker_mix}
+https://ctf.example/internal
+admin@example.com
+172.16.5.9
