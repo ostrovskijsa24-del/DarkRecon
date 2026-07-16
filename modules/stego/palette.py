@@ -20,6 +20,11 @@ class PaletteAnalyzer:
 
         self.image_path = Path(image_path)
 
+        if self.image_path.suffix.lower() != ".png":
+            raise ValueError(
+                "Данный модуль работает только с PNG."
+            )
+
         self.image = Image.open(self.image_path)
 
     def has_palette(self) -> bool:
@@ -176,6 +181,7 @@ class PaletteAnalyzer:
 
     @staticmethod
     def print_report(report: dict):
+
         """
         Выводит результаты анализа.
         """

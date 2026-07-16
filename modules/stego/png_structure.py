@@ -21,6 +21,11 @@ class PNGStructureAnalyzer:
 
         self.image_path = Path(image_path)
 
+        if self.image_path.suffix.lower() != ".png":
+            raise ValueError(
+                "Данный модуль работает только с PNG."
+            )
+
         self.chunks = []
 
     def check_signature(self):
